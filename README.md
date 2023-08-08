@@ -2,6 +2,7 @@
 
 - [Manage SUSE Enterprise Linux Systems with Rancher System-Upgrade-Controller](#manage-suse-enterprise-linux-systems-with-rancher-system-upgrade-controller)
     - [Setup SLE Micro install ISO with embedded ignition/combustion partition](#setup-sle-micro-install-iso-with-embedded-ignitioncombustion-partition)
+        - [Clean instruction to creating your ignition/combustion image](#clean-instruction-to-creating-your-ignitioncombustion-image)
     - [Install downstream cluster using Rancher](#install-downstream-cluster-using-rancher)
         - [Install system-upgrade-controller to downstream cluster](#install-system-upgrade-controller-to-downstream-cluster)
     - [Setup system upgrade plan](#setup-system-upgrade-plan)
@@ -17,11 +18,25 @@
 
 <!-- /TOC -->
 
+
+
 # Manage SUSE Enterprise Linux Systems with Rancher System-Upgrade-Controller
 
-The goal of the information contained in this repository is to allow you to manage the operating system, and in this case SUSE Enterprise Linux (SLE Micro, SUSE Linux Enterprise Server, and SUSE ALP) using the Rancher system-upgrade-controller as the mechanism. There are many reasons why you might want to use it in this way. Some of the top reasons are the barrier to entry is very low and does not require a lot of setup. You don't have to learn another tool. It fits perfectly in the realm of cloud native declarative workload management. Creating a descriptive plan that eventually achieves the result as it has been defined. 
+The goal of the information contained in this repository is to allow you to manage the operating system, and in this case SUSE Linux Enterprise (SLE Micro, SUSE Linux Enterprise Server, and SUSE ALP) using the Rancher system-upgrade-controller as the mechanism. There are many reasons why you might want to use it in this way. Some of the top reasons are the barrier to entry is very low and does not require a lot of setup. You don't have to learn another tool. It fits perfectly in the realm of cloud native declarative workload management. Creating a descriptive plan that eventually achieves the result as it has been defined. 
+
+There is one dependency in this setup when your working with a production environment and that is "Where do you get the updates?". You could source them from the SUSE Customer Center and register all of your nodes there, but then everything is going over the internet for its updates. In a production setup you will want to keep things isolated on premise to ensure proper provinence of your patches. Using a tool from SUSE called the Repository Mirroring Tool (RMT) will allow you to achieve this level of security with your updates and keep everything on premise. There is a guide published with each new service pack of SUSE Linux Enterprise Server (SLES) that walks you through how to set this up and mirror your software repositories. You can access this guide here [Repository Mirroring Tool Guide] (https://documentation.suse.com/sles/15-SP4/html/SLES-all/book-rmt.html) Another method for anyone looking for a cloud native approach is installing RMT on Kubernetes which you can reference in the same guide under "Deploying RMT on top of the Kubernetes cluster". Once you have RMT setup, then walk through the steps to mirror the SUSE Linux Enterprise distributions you will be using.
+
+To continue you can follow the next steps or refer to the table of contents.
 
 ## Setup SLE Micro install ISO with embedded ignition/combustion partition
+SLE Micro is a powerful Linux distribution targetted at specialized workloads for containers and virtual machines, which comes deployed as an immutable infrastructure with a security profile using SELinux that is locked down from the very start. Since we are working with an immutable deployment you will want to change the personality of that deployment during the installation process. There are two methods built into SLE Micro that allow you to do this, and those are Ignition and Combustion. You can use one or the other, or combine them to achieve your results. Either way, it is a powerful combination together to achieve anything you require to give your system the personality it needs. There are many documents out there that talk about these two tools and I will list those below. Many of these documents will get you to the right spot, but don't give you a clean step by step instruction. I will walk you through 
+that step by step below. 
+
+[OpenSUSE Portal:MicroOS/Ignition](https://en.opensuse.org/Portal:MicroOS/Ignition)
+[OpenSUSE Portal:MicroOS/Combustion](https://en.opensuse.org/Portal:MicroOS/Combustion)
+
+### Clean instruction to creating your ignition/combustion image
+
 
 
 ## Install downstream cluster using Rancher
