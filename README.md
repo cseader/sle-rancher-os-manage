@@ -7,6 +7,13 @@
     - [Setup system upgrade plan](#setup-system-upgrade-plan)
         - [Apply system upgrade plan to downstream cluster](#apply-system-upgrade-plan-to-downstream-cluster)
         - [Apply labels to control execution](#apply-labels-to-control-execution)
+    - [Inventory Kubernetes nodes using labels](#inventory-kubernetes-nodes-using-labels)
+    - [Staging downstream clusters for upgrades](#staging-downstream-clusters-for-upgrades)
+        - [Install staging snapshot to downstream clusters](#install-staging-snapshot-to-downstream-clusters)
+    - [Install live patches to downstream clusters no reboots](#install-live-patches-to-downstream-clusters-no-reboots)
+    - [Snapshot rollback](#snapshot-rollback)
+    - [Upgrade 3rd party drivers using system upgrade plan](#upgrade-3rd-party-drivers-using-system-upgrade-plan)
+    - [Upgrade firmware using system upgrade plan](#upgrade-firmware-using-system-upgrade-plan)
 
 <!-- /TOC -->
 
@@ -26,3 +33,18 @@ The goal of the information contained in this repository is to allow you to mana
 ### Apply system upgrade plan to downstream cluster
 
 ### Apply labels to control execution
+
+
+## Inventory Kubernetes nodes using labels
+
+## Staging downstream clusters for upgrades
+
+### Install staging snapshot to downstream clusters
+
+## Install live patches to downstream clusters (no reboots)
+
+## Snapshot rollback
+
+## Upgrade 3rd party drivers using system upgrade plan
+
+## Upgrade firmware using system upgrade plan
