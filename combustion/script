@@ -1,0 +1,25 @@
+#!/bin/bash
+# combustion: network
+# script generated with https://opensuse.github.io/fuel-ignition/
+
+# Redirect output to the console
+exec > >(exec tee -a /dev/tty0) 2>&1
+
+# Registration
+if ! which SUSEConnect > /dev/null 2>&1; then
+    zypper --non-interactive install suseconnect-ng
+fi
+SUSEConnect --url https://rmt.example.com --gpg-auto-import-keys
+
+# Install docker if your using RKE1
+#zypper --non-interactive install docker
+
+# Enable docker daemon if your using RKE1
+#systemctl enable docker.service
+
+# Disable the transactional-update timer for use with Rancher system-update-controller
+# If this is enabled then the system will apply transactional-updates based on the timer
+systemctl --now disable transactional-update.timer
+
+# Leave a marker
+echo "Configured with combustion" > /etc/issue.d/combustion
