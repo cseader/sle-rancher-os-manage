@@ -41,6 +41,8 @@ that step by step below.
 
 * [SLE Micro Documentation](https://documentation.suse.com/sle-micro/5.4/html/SLE-Micro-all/cha-images-ignition.html)
 
+Download your SLE Micro **SelfInstall** ISO [here](https://www.suse.com/download/sle-micro/) and make sure you choose the file with the name that looks like this:
+```SLE-Micro.x86_64-5.4.0-Default-SelfInstall-GM.install.iso```
 ### Setup your ignition/combustion configuration
 Before tackling the image creation we need to first have a basic understanding of its configuration, and before you do the creation you will first want to make a decsion about whether you want to use ignition or combustion, or use them both together. I'm going to use them both together in this setup just to give you an idea of how that is done. They both have different configurations. 
 
@@ -55,33 +57,33 @@ For combustion it uses a single file called **script** which is a bash shell scr
 
 Attached to this repository you will find a sample script for your use and modification. It has some ideas in it for getting started. Things included are regisering to an RMT server, installing and enabling docker service for use with RKE1 if required, and disabling the transactional-update.timer for use with this solution.
 ### Clean instructions to creating your ignition/combustion image
-To create your ignition/combustion image easily I use a Linux OS with a few tools like truncate, mkfs.ext4, e2label, and xorriso.
+To create your ignition/combustion image easily I use a Linux OS (openSUSE TW) with a few tools like truncate, mkfs.ext4, e2label, and xorriso.
 
-Step 1:
+Step 1, create an image file of 20Mib size:
 
 ```# truncate -s +20M ignition.img```
 
-Step 2:
+Step 2, write an ext4 filesystem to the image:
 
 ```# sudo mkfs.ext4 ignition.img```
 
-Step 3:
+Step 3, label your image with ignition:
 
 ```# sudo e2label ignition.img "ignition"```
 
-Step 4:
+Step 4, mount the image for writing:
 
 ```# sudo mount -o loop ignition.img /mnt```
 
-Step 5:
+Step 5, write your ignition and combustion directories to the image:
 
 ```# sudo mkdir ignition combustion /mnt```
 
-Step 6:
+Step 6, copy ignition configuration to the ignition directory:
 
 ```# cp config.ign /mnt/ignition```
 
-Step 7, copy the script to combustion folder:
+Step 7, copy the script to the combustion directory:
 
 ```# cp script /mnt/combustion```
 
@@ -91,9 +93,12 @@ Step 8, unmount the image:
 
 Step 9, execute xorriso to attach a 3rd partition to the end of the SelfInstall ISO:
 
-```# xorriso -indev SLE-Micro.x86_64-5.4.0-Default-SelfInstall-GM.install.iso -outdev SLE-Micro-Selfinstall2.iso -boot_image any replay -append_partition 3 Linux ignition-micro.img -changes_pending yes```
+```# xorriso -indev SLE-Micro.x86_64-5.4.0-Default-SelfInstall-GM.install.iso -outdev SLE-Micro-Selfinstall.iso -boot_image any replay -append_partition 3 Linux ignition-micro.img -changes_pending yes```
 
+### Installing SLE Micro using SelfInstall ISO
+In this section you need to understand that now that your ISO has been modified and extended with an additional partition on the end you can only use it as a boot media from USB. So when you are attaching it to a virtual platform like VMware, KVM, or VirtualBox then you need to attach it as a bootable USB media. The CDROM media will not mount or recognize the 3rd partition. When booting with the USB media type it will read the ignition label and mount it. 
 
+When you have the media mounted properly You will boot to the grub options to "Install SLE Micro"
 ## Install downstream cluster using Rancher
 
 ### Install system-upgrade-controller to downstream cluster
