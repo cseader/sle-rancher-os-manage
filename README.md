@@ -6,6 +6,7 @@
             - [First the ignition configuration](#first-the-ignition-configuration)
             - [Next the combustion configuration](#next-the-combustion-configuration)
         - [Clean instructions to creating your ignition/combustion image](#clean-instructions-to-creating-your-ignitioncombustion-image)
+        - [Installing SLE Micro using SelfInstall ISO](#installing-sle-micro-using-selfinstall-iso)
     - [Install downstream cluster using Rancher](#install-downstream-cluster-using-rancher)
         - [Install system-upgrade-controller to downstream cluster](#install-system-upgrade-controller-to-downstream-cluster)
     - [Setup system upgrade plan](#setup-system-upgrade-plan)
@@ -41,7 +42,7 @@ that step by step below.
 
 * [SLE Micro Documentation](https://documentation.suse.com/sle-micro/5.4/html/SLE-Micro-all/cha-images-ignition.html)
 
-Download your SLE Micro **SelfInstall** ISO [here](https://www.suse.com/download/sle-micro/) and make sure you choose the file with the name that looks like this:
+Download your SLE Micro **SelfInstall** ISO [here](https://www.suse.com/download/sle-micro/) and make sure you choose the file with the name that looks like this with **SelfInstall** in the name:
 ```SLE-Micro.x86_64-5.4.0-Default-SelfInstall-GM.install.iso```
 ### Setup your ignition/combustion configuration
 Before tackling the image creation we need to first have a basic understanding of its configuration, and before you do the creation you will first want to make a decsion about whether you want to use ignition or combustion, or use them both together. I'm going to use them both together in this setup just to give you an idea of how that is done. They both have different configurations. 
