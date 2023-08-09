@@ -2,7 +2,10 @@
 
 - [Manage SUSE Enterprise Linux Systems with Rancher System-Upgrade-Controller](#manage-suse-enterprise-linux-systems-with-rancher-system-upgrade-controller)
     - [Setup SLE Micro install ISO with embedded ignition/combustion partition](#setup-sle-micro-install-iso-with-embedded-ignitioncombustion-partition)
-        - [Clean instruction to creating your ignition/combustion image](#clean-instruction-to-creating-your-ignitioncombustion-image)
+        - [Setup your ignition/combustion configuration](#setup-your-ignitioncombustion-configuration)
+            - [First the ignition configuration](#first-the-ignition-configuration)
+            - [Next the combustion configuration](#next-the-combustion-configuration)
+        - [Clean instructions to creating your ignition/combustion image](#clean-instructions-to-creating-your-ignitioncombustion-image)
     - [Install downstream cluster using Rancher](#install-downstream-cluster-using-rancher)
         - [Install system-upgrade-controller to downstream cluster](#install-system-upgrade-controller-to-downstream-cluster)
     - [Setup system upgrade plan](#setup-system-upgrade-plan)
@@ -37,7 +40,21 @@ that step by step below.
 * [OpenSUSE Portal:MicroOS/Combustion](https://en.opensuse.org/Portal:MicroOS/Combustion)
 
 * [SLE Micro Documentation](https://documentation.suse.com/sle-micro/5.4/html/SLE-Micro-all/cha-images-ignition.html)
-### Clean instruction to creating your ignition/combustion image
+
+### Setup your ignition/combustion configuration
+Before tackling the image creation we need to first have a basic understanding of its configuration, and before you do the creation you will first want to make a decsion about whether you want to use ignition or combustion, or use them both together. I'm going to use them both together in this setup just to give you an idea of how that is done. They both have different configurations. 
+
+There is a nifty tool created by the openSUSE team to help you create your first ignition and combustion configuration. Just use [Fuel Ignition.](https://opensuse.github.io/fuel-ignition/)
+#### First the ignition configuration
+This configuration uses a file called **config.ign** which is a json file format. You can add users, create passwords, create files, add ssh keys, network configuration, create and enable services, and much more. For a full explanation read the [Ignition Docs.](https://coreos.github.io/ignition/)
+
+Attached to this repository you will find a sample config.ign for your use and modification. It includes a few users with a section for authorized keys, a hostname, and the password hash is for **linux** as the password on both users. The network is setup for dhcp. Go ahead and change it to fit your setup.
+
+#### Next the combustion configuration
+For combustion it uses a single file called **script** which is a bash shell script. This can be used to change many advanced things like default partitioning, install packages, required drivers, and even some of the same things as ignition such as adding files, passwords, creating users, and many more. Combustion can be very powerful and used various use cases. Explore the many options. 
+
+Attached to this repository you will find a sample script for your use and modification. It has some ideas in it for getting started. Things included are regisering to an RMT server, installing and enabling docker service for use with RKE1 if required, and disabling the transactional-update.timer for use with this solution.
+### Clean instructions to creating your ignition/combustion image
 To create your ignition/combustion image easily I use a Linux OS with a few tools like truncate, mkfs.ext4, e2label, and xorriso.
 
 Step 1:
