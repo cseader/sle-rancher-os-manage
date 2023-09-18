@@ -9,13 +9,50 @@ exec > >(exec tee -a /dev/tty0) 2>&1
 if ! which SUSEConnect > /dev/null 2>&1; then
     zypper --non-interactive install suseconnect-ng
 fi
+
+set -x
+
+# register to local rmt server
 SUSEConnect --url https://rmt.example.com --gpg-auto-import-keys
 
-# Install docker if your using RKE1
+# uncomment to Add PackageHub repository for additional packages
+#suseconnect -p PackageHub/15.4/x86_64
+
+# uncomment to Install docker if your using RKE1
 #zypper --non-interactive install docker
 
-# Enable docker daemon if your using RKE1
+# uncomment to Enable docker daemon if your using RKE1
 #systemctl enable docker.service
+
+# Add Elemental repository and required packages 
+zypper ar --refresh --no-gpgcheck https://download.opensuse.org/repositories/isv:/Rancher:/Elemental:/Staging/standard  elemental
+zypper -n in elemental-register elemental-system-agent
+
+# If you don't have the PackageHub repository attached then you can grab this package from the build service
+# download directly from here https://download.opensuse.org/repositories/openSUSE:/Backports:/SLE-15-SP4/standard/x86_64/yq-4.18.1-bp154.1.17.x86_64.rpm
+# Once you have the rpm package downloaded then move it to the combustion folder where the script is located.
+# This command installs it from the combustion folder
+zypper --no-gpg-checks -n in -y ./yq-4.18.1-bp154.1.17.x86_64.rpm
+
+# Add a placeholder for elemental bin
+echo "#!/bin/bash" > /bin/elemental
+chmod a+x /bin/elemental
+
+# Perform elemental registration 
+# config.yaml will need to be in the combustion folder with the script file and yq
+cp config.yaml /etc/elemental/config.yaml
+elemental-register --config-path /etc/elemental/config.yaml --state-path /etc/elemental/state.yaml --reset
+
+# Move files to right positions - Prep phase for elemental agent
+mkdir -p /etc/rancher/elemental/agent/
+
+# Setup elemental agent configuration
+echo '{"workDirectory": "/var/lib/elemental/agent/work", "localEnabled": true, "localPlanDirectory": "/var/lib/elemental/agent/plans", "appliedPlanDirectory": "/var/lib/elemental/agent/applied", "remoteEnabled": true, "connectionInfoFile": "/etc/elemental/elemental_connection.json"}' > /etc/rancher/elemental/agent/config.yaml
+chmod 600 /etc/rancher/elemental/agent/config.yaml
+
+# Setup elemental agent connection information
+cat /tmp/elemental-system-agent.yaml | yq '(.stages.initramfs.[0].files[] | select(. != null) ) as $i ireduce({}; .[$i|key] = {$i.path: $i.content}) | .[]' | yq ' with_entries(select(.key == "*json" )).[]' > /etc/elemental/elemental_connection.json
+chmod 600 /etc/elemental/elemental_connection.json
 
 # Disable the transactional-update timer for use with Rancher system-update-controller
 # If this is enabled then the system will apply transactional-updates based on the timer
