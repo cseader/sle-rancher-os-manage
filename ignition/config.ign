@@ -8,14 +8,14 @@
         "name": "root",
         "passwordHash": "$2a$10$BDQG8P6hf68oTbYxW6Rl.unKytgv0C2JT9pQug72OA4GyBBebIyuq",
         "sshAuthorizedKeys": [
-          "ssh-rsa SOME_KEY user@localhost.localdomain"
+          "some_authorized_key"
         ]
       },
       {
-        "name": "guest",
+        "name": "admin",
         "passwordHash": "$2a$10$LQ9gB6EDfA6kHOxN1GvJE.c0YHuMN2jUZKGZF3eLuwMDlIi.qb.ji",
         "sshAuthorizedKeys": [
-          "ssh-rsa SOME_KEY user@localhost.localdomain"
+          "some_authorized_key"
         ]
       }
     ]
@@ -38,8 +38,14 @@
         "mode": 420,
         "overwrite": true,
         "contents": {
-          "source": "data:,micro-node"
+          "source": "data:,sle-micro"
         }
+      },
+      {
+        "source_type": "data",
+        "data_content": "elemental:\n  registration:\n    url: https://rancher.example.com/elemental/registration/8smsg67q7wnccsj2xkxmjvglgfnjh564ltzkdgnmd7b4sfjzw9rrgg",
+        "path": "/etc/elemental/config.yaml",
+        "mode": 420
       },
       {
         "path": "/etc/NetworkManager/system-connections/eth0.nmconnection",
@@ -58,6 +64,15 @@
           "source": "data:text/plain;charset=utf-8;base64,W21haW5dCiMgRG8gbm90IGRvIGF1dG9tYXRpYyAoREhDUC9TTEFBQykgY29uZmlndXJhdGlvbiBvbiBldGhlcm5ldCBkZXZpY2VzCiMgd2l0aCBubyBvdGhlciBtYXRjaGluZyBjb25uZWN0aW9ucy4Kbm8tYXV0by1kZWZhdWx0PSoK",
           "human_read": "[main]\n# Do not do automatic (DHCP/SLAAC) configuration on ethernet devices\n# with no other matching connections.\nno-auto-default=*\n"
         }
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "name": "elemental-system-agent.service",
+        "enabled": true,
+        "contents": "[Unit]\nDescription=Elemental System Agent\nDocumentation=https://github.com/rancher/system-agent\nWants=network-online.target\nAfter=network-online.target\nAfter=time-sync.target\nConditionPathExists=!/etc/systemd/system/rancher-system-agent.service\n\n[Install]\nWantedBy=multi-user.target\nAlias=elemental-system-agent.service\n\n[Service]\nType=simple\nRestart=always\nRestartSec=5s\nStandardOutput=journal+console\nStandardError=journal+console\nEnvironment=\"CATTLE_AGENT_CONFIG=/etc/rancher/elemental/agent/config.yaml\"\nEnvironment=\"CATTLE_LOGLEVEL=debug\"\nExecStart=/usr/sbin/elemental-system-agent sentinel"
       }
     ]
   }
