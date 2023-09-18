@@ -1,0 +1,17 @@
+elemental:
+  registration:
+    url: https://rancher.example.com/elemental/registration/8smsg67q7wnccsj2xkxmjvglgfnjh564ltzkdgnmd7b4sfjzw9rrgg
+    ca-cert: |-
+      -----BEGIN CERTIFICATE-----
+      MIIBqDCCAU2gAwIBAgIBADAKBggqhkjOPQQDAjA7MRwwGgYDVQQKExNkeW5hbWlj
+      bGlzdGVuZXItb3JnMRswGQYDVQQDExJkeW5hbWljbGlzdGVuZXItY2EwHhcNMjEw
+      OTA3MjExMTU0WhcNMzEwOTA1MjExMTU0WjA7MRwwGgYDVQQKExNkeW5hbWljbGlz
+      dGVuZXItb3JnMRswGQYDVQQDExJkeW5hbWljbGlzdGVuZXItY2EwWTATBgcqhkjO
+      PQIBBggqhkjOPQMBBwNCAARSNiif3v9bNirTvoGYS439JG4dxuIlt1m+lq0nLMUB
+      HRY7A/EN3LSdSOZquiiJMjCTtPRV9nazbKF7wPW1aSnno0IwQDAOBgNVHQ8BAf8E
+      BAMCAqQwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUPpKotz0brMR8LjGcS6/2
+      p1IcM/MwCgYIKoZIzj0EAwIDSQAwRgIhAPJuNbCqVfEw9ychZerMJaBKVg3llZgZ
+      j+IylaPYDh+OAiEAxkFsyWMpxq7hzTOJALmBgznDMQNLi4eiw2NTWDWIoyk=
+      -----END CERTIFICATE-----
+    emulate-tpm: true
+    emulated-tpm-seed: -1
