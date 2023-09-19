@@ -46,16 +46,22 @@ Download your SLE Micro **SelfInstall** ISO [here](https://www.suse.com/download
 Before tackling the image creation we need to first have a basic understanding of its configuration, and before you do the creation you will first want to make a decsion about whether you want to use ignition or combustion, or use them both together. I'm going to use them both together in this setup just to give you an idea of how that is done. They both have different configurations. 
 
 There is a nifty tool created by the openSUSE team to help you create your first ignition and combustion configuration. Just use [Fuel Ignition.](https://opensuse.github.io/fuel-ignition/)
-#### First the ignition configuration
+#### First, the ignition configuration
 This configuration uses a file called **config.ign** which is a json file format. You can add users, create passwords, create files, add ssh keys, network configuration, create and enable services, and much more. For a full explanation read the [Ignition Docs.](https://coreos.github.io/ignition/)
 
 Attached to this repository you will find a sample config.ign for your use and modification. It includes a few users with a section for authorized keys, a hostname, and the password hash is for **linux** as the password on both users. The network is setup for dhcp. Go ahead and change it to fit your setup.
-
-#### Next the combustion configuration
+##### elemental register and agent components
+There are two sections near the bottom of the config.ign file. One component is the elemental-system-agent.service enablement so that it automatically gets turned on and connects to the Rancher server. Another one is the config.yaml for elemental-register, which as of this writing it might not be required because combustion takes care of it. 
+#### Next, the combustion configuration
 For combustion it uses a single file called **script** which is a bash shell script. This can be used to change many advanced things like default partitioning, install packages, required drivers, and even some of the same things as ignition such as adding files, passwords, creating users, and many more. Combustion can be very powerful and used various use cases. Explore the many options. 
 
-Attached to this repository you will find a sample script for your use and modification. It has some ideas in it for getting started. Things included are regisering to an RMT server, installing and enabling docker service for use with RKE1 if required, and disabling the transactional-update.timer for use with this solution.
-### Clean instructions to creating your ignition/combustion image
+Attached to this repository you will find a sample script for your use and modification. It has some ideas in it for getting started and many other annotated comments. Some things included are regisering to an RMT server, installing and enabling docker service for use with RKE1 if required, and disabling the transactional-update.timer for use with this solution so the timer does not run daily pulling updates automatically. 
+##### elemental register and agent components
+Just like in the ignition configuration there are a few areas that need to be setup so that the elemental-register can work properly. In the combustion folder there are two additional files that will need to be copied into the folder. The file config.yaml and an rpm called yq. The config.yaml needs to be retrieved from your OS Management Registration Endpoint. Once you have your Registration Endpoint created you will see something similar to this "OS Management -> Registration Endpoint" ![OS Management > Registration Endpoint](/doc/OSManage-RegEndpoint.png?raw=true)
+When you have a proper registration endpoint setup you will see the Registration URL. Copy that URL and open it in a new browser tab/window and you will see the output of your config.yaml file that you require for elemental-register. It will look like this > ![Registration URL](/doc/Registration-URL.png?raw=true)
+Copy or download the file and drop it into the combustion folder with the script file.
+The next thing required which is temporary until we have something more solid developed is the use of the yq binary. If you don't have the PackageHub repository attached then you can grab this package from the build service and download directly from https://download.opensuse.org/repositories/openSUSE:/Backports:/SLE-15-SP4/standard/x86_64/yq-4.18.1-bp154.1.17.x86_64.rpm Once you have the rpm package downloaded then move it to the combustion folder where the script file is located. There is a command in the script which installs the rpm from that folder. Read through the annotated script file since it also has other instructions or modifications that you could make. 
+### Clean instructions to creating your ignition/combustion SLE Micro installation image
 To create your ignition/combustion image easily I use a Linux OS (openSUSE TW) with a few tools like truncate, mkfs.ext4, e2label, and xorriso.
 
 Step 1, create an image file of 20Mib size:
@@ -97,7 +103,10 @@ Step 9, execute xorriso to attach a 3rd partition to the end of the SelfInstall 
 ### Installing SLE Micro using SelfInstall ISO
 In this section you need to understand that now that your ISO has been modified and extended with an additional partition on the end you can only use it as a boot media from USB. So when you are attaching it to a virtual platform like VMware, KVM, or VirtualBox then you need to attach it as a bootable USB media. The CDROM media will not mount or recognize the 3rd partition. When booting with the USB media type it will read the ignition label and mount it. 
 
-When you have the media mounted properly You will boot to the grub options to "Install SLE Micro"
+When you have the media mounted properly You will boot to the grub install options and select "Install SLE Micro"
+
+#### Register the SLE Micro system to Rancher with elemental-register
+This should now happen automatically if you followed the steps in the setup of the ignition and combustion and have included it in your SelfInstall ISO.
 ## Install downstream cluster using Rancher
 
 ### Install system-upgrade-controller to downstream cluster
